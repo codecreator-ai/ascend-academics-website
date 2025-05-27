@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ascend Academics - Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #ffffff;
+            line-height: 1.6;
+            color: #000;
+        }
+
+        .header {
+            background: #000000;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid #333;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .logout-btn {
+            background: white;
+            color: #000;
+            border: 2px solid white;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logout-btn:hover {
+            background: #000;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid #000;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 5px 5px 0px #000;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #333;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .content-section {
+            background: white;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            border: 2px solid #000;
+        }
+
+        .section-header {
+            background: #f8f8f8;
+            padding: 1rem 1.5rem;
+            border-bottom: 2px solid #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .refresh-btn, .export-btn {
+            background: #000;
+            color: white;
+            border: 2px solid #000;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover, .export-btn:hover {
+            background: white;
+            color: #000;
+        }
+
+        .export-btn {
+            background: #333;
+        }
+
+        .export-btn:hover {
+            background: white;
+            color: #333;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #000;
+            font-weight: 500;
+        }
+
+        .data-table th {
+            background: #000;
+            color: white;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover {
+            background: #f8f8f8;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            border: 1px solid #000;
+        }
+
+        .status-pending {
+            background: #f8f8f8;
+            color: #000;
+        }
+
+        .status-confirmed {
+            background: #000;
+            color: white;
+        }
+
+        .status-cancelled {
+            background: #333;
+            color: white;
+        }
+
+        .status-new {
+            background: #f0f0f0;
+            color: #000;
+        }
+
+        .action-btn {
+            padding: 0.3rem 0.8rem;
+            border: 1px solid #000;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin: 0 0.2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .btn-approve {
+            background: #000;
+            color: white;
+        }
+
+        .btn-reject {
+            background: #333;
+            color: white;
+        }
+
+        .btn-view {
+            background: white;
+            color: #000;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .error {
+            color: #000;
+            background: #f0f0f0;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 2px solid #000;
+            font-weight: 600;
+        }
+
+        .success {
+            color: #000;
+            background: #f8f8f8;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 2px solid #000;
+            font-weight: 600;
+        }
+
+        .tab-nav {
+            display: flex;
+            background: white;
+            overflow: hidden;
+            border: 2px solid #000;
+            border-bottom: none;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            background: #f8f8f8;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+            border-right: 1px solid #000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:last-child {
+            border-right: none;
+        }
+
+        .tab-btn.active {
+            background: #000;
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #e0e0e0;
+            color: #000;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 1.5rem;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 5rem auto;
+            background: white;
+            padding: 2rem;
+            border: 2px solid #000;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #000;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #000;
+            color: white;
+            border: 2px solid #000;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: white;
+            color: #000;
+        }
+
+        .export-section {
+            background: #f8f8f8;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 2px solid #000;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .bulk-export-btn {
+            background: #333;
+            color: white;
+            border: 2px solid #333;
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .bulk-export-btn:hover {
+            background: white;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .data-table {
+                font-size: 0.9rem;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 0.5rem;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .export-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Form (shown when not authenticated) -->
+    <div id="loginSection" style="display: none;">
+        <div class="login-form">
+            <h2 style="text-align: center; margin-bottom: 2rem; color: #000; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;">ADMIN LOGIN</h2>
+            <div class="form-group">
+                <label for="loginEmail">EMAIL:</label>
+                <input type="email" id="loginEmail" placeholder="Enter admin email">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">PASSWORD:</label>
+                <input type="password" id="loginPassword" placeholder="Enter password">
+            </div>
+            <button class="login-btn" onclick="adminLogin()">LOGIN</button>
+            <div id="loginMessage"></div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (shown when authenticated) -->
+    <div id="dashboardSection" style="display: none;">
+        <div class="header">
+            <h1>🎓 ASCEND ACADEMICS - ADMIN DASHBOARD</h1>
+            <button class="logout-btn" onclick="adminLogout()">LOGOUT</button>
+        </div>
+
+        <div class="container">
+            <!-- Statistics Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalContacts">-</div>
+                    <div class="stat-label">TOTAL INQUIRIES</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="newContacts">-</div>
+                    <div class="stat-label">NEW MESSAGES</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalReviews">-</div>
+                    <div class="stat-label">PUBLISHED REVIEWS</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="newsletterSubs">-</div>
+                    <div class="stat-label">NEWSLETTER SUBSCRIBERS</div>
+                </div>
+            </div>
+
+            <!-- Bulk Export Section -->
+            <div class="export-section">
+                <h3 style="color: #000; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem;">📊 EXPORT ALL DATA TO SPREADSHEET</h3>
+                <p style="margin-bottom: 1rem; font-weight: 500;">Download all your business data as CSV files for easy spreadsheet management:</p>
+                <div class="export-buttons">
+                    <button class="bulk-export-btn" onclick="exportAllData()">📥 EXPORT ALL DATA</button>
+                    <button class="bulk-export-btn" onclick="exportContacts()">📧 EXPORT CONTACTS</button>
+                    <button class="bulk-export-btn" onclick="exportReviews()">⭐ EXPORT REVIEWS</button>
+                    <button class="bulk-export-btn" onclick="exportNewsletter()">📮 EXPORT NEWSLETTER</button>
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">Files will download as CSV format, ready to open in Excel or Google Sheets.</p>
+            </div>
+
+            <!-- Main Content Tabs -->
+            <div class="content-section">
+                <div class="tab-nav">
+                    <button class="tab-btn active" onclick="showTab('sessions')">CONTACT INQUIRIES</button>
+                    <button class="tab-btn" onclick="showTab('reviews')">REVIEWS</button>
+                    <button class="tab-btn" onclick="showTab('contacts')">GENERAL MESSAGES</button>
+                    <button class="tab-btn" onclick="showTab('newsletter')">NEWSLETTER</button>
+                </div>
+
+                <!-- Sessions Tab -->
+                <div id="sessionsTab" class="tab-content active">
+                    <div class="section-header">
+                        <div class="section-title">TUTORING INQUIRIES (EMAIL-BASED)</div>
+                        <div class="header-actions">
+                            <button class="export-btn" onclick="exportTutoringInquiries()">📥 EXPORT</button>
+                            <button class="refresh-btn" onclick="loadAdminData()">🔄 REFRESH</button>
+                        </div>
+                    </div>
+                    <div style="background: #f8f8f8; padding: 1rem; margin: 1rem 0; border: 1px solid #000;">
+                        <p><strong>📧 NOTE:</strong> Students now contact you directly via email. Session data here represents contact form submissions and inquiries.</p>
+                    </div>
+                    <div id="sessionsContent">
+                        <div class="loading">Loading inquiries...</div>
+                    </div>
+                </div>
+
+                <!-- Reviews Tab -->
+                <div id="reviewsTab" class="tab-content">
+                    <div class="section-header">
+                        <div class="section-title">STUDENT REVIEWS</div>
+                        <div class="header-actions">
+                            <button class="export-btn" onclick="exportReviews()">📥 EXPORT</button>
+                            <button class="refresh-btn" onclick="loadAdminData()">🔄 REFRESH</button>
+                        </div>
+                    </div>
+                    <div id="reviewsContent">
+                        <div class="loading">Loading reviews...</div>
+                    </div>
+                </div>
+
+                <!-- Contacts Tab -->
+                <div id="contactsTab" class="tab-content">
+                    <div class="section-header">
+                        <div class="section-title">GENERAL CONTACT MESSAGES</div>
+                        <div class="header-actions">
+                            <button class="export-btn" onclick="exportContacts()">📥 EXPORT</button>
+                            <button class="refresh-btn" onclick="loadAdminData()">🔄 REFRESH</button>
+                        </div>
+                    </div>
+                    <div id="contactsContent">
+                        <div class="loading">Loading contacts...</div>
+                    </div>
+                </div>
+
+                <!-- Newsletter Tab -->
+                <div id="newsletterTab" class="tab-content">
+                    <div class="section-header">
+                        <div class="section-title">NEWSLETTER SUBSCRIBERS</div>
+                        <div class="header-actions">
+                            <button class="export-btn" onclick="exportNewsletter()">📥 EXPORT</button>
+                            <button class="refresh-btn" onclick="loadAdminData()">🔄 REFRESH</button>
+                        </div>
+                    </div>
+                    <div id="newsletterContent">
+                        <div class="loading">Loading subscribers...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Configuration -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js';
+
+        // 🚨 REPLACE WITH YOUR FIREBASE CONFIG 🚨
+        const firebaseConfig = {
+          apiKey: "AIzaSyC3JhMQrCukLzT5pHkAX6h8Rv8qKGJ34uA",
+          authDomain: "aa-tutoring-b42bd.firebaseapp.com",
+          projectId: "aa-tutoring-b42bd",
+          storageBucket: "aa-tutoring-b42bd.firebasestorage.app",
+          messagingSenderId: "1002930203736",
+          appId: "1:1002930203736:web:5bfcac78a21b1fb7002e2d",
+          measurementId: "G-6Z71TNB6PP"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const functions = getFunctions(app);
+
+        window.firebase = { auth, db, functions };
+        window.firebaseUtils = {
+            signInWithEmailAndPassword,
+            signOut,
+            onAuthStateChanged,
+            httpsCallable
+        };
+    </script>
+
+    <script>
+        let currentUser = null;
+        let adminData = {};
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAuth();
+        });
+
+        function initializeAuth() {
+            if (window.firebaseUtils && window.firebaseUtils.onAuthStateChanged) {
+                window.firebaseUtils.onAuthStateChanged(window.firebase.auth, (user) => {
+                    currentUser = user;
+                    if (user && user.email === 'bajajpaavan@gmail.com') {
+                        showDashboard();
+                        loadAdminData();
+                    } else {
+                        showLogin();
+                    }
+                });
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('dashboardSection').style.display = 'none';
+        }
+
+        function showDashboard() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('dashboardSection').style.display = 'block';
+        }
+
+        async function adminLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const messageDiv = document.getElementById('loginMessage');
+
+            if (!email || !password) {
+                messageDiv.innerHTML = '<div class="error">Please enter email and password</div>';
+                return;
+            }
+
+            // Only allow specific admin email
+            if (email !== 'bajajpaavan@gmail.com') {
+                messageDiv.innerHTML = '<div class="error">Access denied</div>';
+                return;
+            }
+
+            try {
+                await window.firebaseUtils.signInWithEmailAndPassword(window.firebase.auth, email, password);
+                messageDiv.innerHTML = '<div class="success">Logging in...</div>';
+            } catch (error) {
+                messageDiv.innerHTML = `<div class="error">Login failed: ${error.message}</div>`;
+            }
+        }
+
+        async function adminLogout() {
+            try {
+                await window.firebaseUtils.signOut(window.firebase.auth);
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        async function loadAdminData() {
+            try {
+                const getAdminData = window.firebaseUtils.httpsCallable(window.firebase.functions, 'getAdminData');
+                const result = await getAdminData();
+                adminData = result.data;
+
+                updateStats();
+                renderSessions();
+                renderReviews();
+                renderContacts();
+                renderNewsletter();
+            } catch (error) {
+                console.error('Error loading admin data:', error);
+            }
+        }
+
+        function updateStats() {
+            if (adminData.stats) {
+                document.getElementById('totalContacts').textContent = adminData.stats.totalContacts || adminData.contacts?.length || 0;
+                document.getElementById('newContacts').textContent = adminData.stats.newContacts || 0;
+                document.getElementById('totalReviews').textContent = adminData.stats.totalReviews || adminData.reviews?.length || 0;
+                document.getElementById('newsletterSubs').textContent = adminData.stats.newsletterSubscribers || adminData.newsletter?.length || 0;
+            }
+        }
+
+        function renderSessions() {
+            const container = document.getElementById('sessionsContent');
+            if (!adminData.contacts || adminData.contacts.length === 0) {
+                container.innerHTML = '<div class="loading">No inquiries found</div>';
+                return;
+            }
+
+            // Filter for tutoring-related inquiries
+            const tutoringInquiries = adminData.contacts.filter(contact => 
+                contact.subject === 'scheduling' || 
+                contact.subject === 'pricing' || 
+                contact.subject === 'subjects' || 
+                contact.message.toLowerCase().includes('tutor') ||
+                contact.message.toLowerCase().includes('session') ||
+                contact.message.toLowerCase().includes('math') ||
+                contact.message.toLowerCase().includes('science')
+            );
+
+            if (tutoringInquiries.length === 0) {
+                container.innerHTML = '<div class="loading">No tutoring inquiries found</div>';
+                return;
+            }
+
+            const table = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>NAME</th>
+                            <th>EMAIL</th>
+                            <th>SUBJECT</th>
+                            <th>MESSAGE PREVIEW</th>
+                            <th>DATE</th>
+                            <th>STATUS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tutoringInquiries.map(inquiry => `
+                            <tr>
+                                <td>${inquiry.name}</td>
+                                <td>${inquiry.email}</td>
+                                <td>${inquiry.subject || 'GENERAL'}</td>
+                                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">
+                                    ${inquiry.message.substring(0, 100)}${inquiry.message.length > 100 ? '...' : ''}
+                                </td>
+                                <td>${new Date(inquiry.createdAt).toLocaleDateString()}</td>
+                                <td>
+                                    <span class="status-badge status-${inquiry.status}">
+                                        ${inquiry.status || 'NEW'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="action-btn btn-view" onclick="viewInquiry('${inquiry.id}')">VIEW</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            container.innerHTML = table;
+        }
+
+        function renderReviews() {
+            const container = document.getElementById('reviewsContent');
+            if (!adminData.reviews || adminData.reviews.length === 0) {
+                container.innerHTML = '<div class="loading">No reviews found</div>';
+                return;
+            }
+
+            const table = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>NAME</th>
+                            <th>RATING</th>
+                            <th>COMMENT</th>
+                            <th>DATE</th>
+                            <th>STATUS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${adminData.reviews.map(review => `
+                            <tr>
+                                <td>${review.name}</td>
+                                <td>${'⭐'.repeat(review.rating)}</td>
+                                <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">
+                                    ${review.comment}
+                                </td>
+                                <td>${new Date(review.createdAt).toLocaleDateString()}</td>
+                                <td>
+                                    ${review.approved ? 
+                                        '<span class="status-badge status-confirmed">APPROVED</span>' : 
+                                        '<span class="status-badge status-pending">PENDING</span>'
+                                    }
+                                </td>
+                                <td>
+                                    ${!review.approved ? `
+                                        <button class="action-btn btn-approve" onclick="moderateReview('${review.id}', 'approve')">APPROVE</button>
+                                        <button class="action-btn btn-reject" onclick="moderateReview('${review.id}', 'reject')">REJECT</button>
+                                    ` : `
+                                        <button class="action-btn btn-reject" onclick="moderateReview('${review.id}', 'reject')">HIDE</button>
+                                    `}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            container.innerHTML = table;
+        }
+
+        function renderContacts() {
+            const container = document.getElementById('contactsContent');
+            if (!adminData.contacts || adminData.contacts.length === 0) {
+                container.innerHTML = '<div class="loading">No contacts found</div>';
+                return;
+            }
+
+            const table = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>NAME</th>
+                            <th>EMAIL</th>
+                            <th>SUBJECT</th>
+                            <th>MESSAGE</th>
+                            <th>DATE</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${adminData.contacts.map(contact => `
+                            <tr>
+                                <td>${contact.name}</td>
+                                <td>${contact.email}</td>
+                                <td>${contact.subject || 'GENERAL'}</td>
+                                <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">
+                                    ${contact.message}
+                                </td>
+                                <td>${new Date(contact.createdAt).toLocaleDateString()}</td>
+                                <td>
+                                    <span class="status-badge status-${contact.status}">
+                                        ${contact.status || 'NEW'}
+                                    </span>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            container.innerHTML = table;
+        }
+
+        function renderNewsletter() {
+            const container = document.getElementById('newsletterContent');
+            if (!adminData.newsletter || adminData.newsletter.length === 0) {
+                container.innerHTML = '<div class="loading">No subscribers found</div>';
+                return;
+            }
+
+            const table = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>EMAIL</th>
+                            <th>SUBSCRIBED DATE</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${adminData.newsletter.map(subscriber => `
+                            <tr>
+                                <td>${subscriber.email}</td>
+                                <td>${new Date(subscriber.createdAt).toLocaleDateString()}</td>
+                                <td>
+                                    <span class="status-badge status-confirmed">ACTIVE</span>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            container.innerHTML = table;
+        }
+
+        async function moderateReview(reviewId, action) {
+            try {
+                const moderateReview = window.firebaseUtils.httpsCallable(window.firebase.functions, 'moderateReview');
+                await moderateReview({ reviewId, action });
+                
+                // Refresh data
+                loadAdminData();
+                alert(`Review ${action}d successfully!`);
+            } catch (error) {
+                console.error('Error moderating review:', error);
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        function viewInquiry(contactId) {
+            const inquiry = adminData.contacts.find(c => c.id === contactId);
+            if (inquiry) {
+                alert(`TUTORING INQUIRY DETAILS:\n\nName: ${inquiry.name}\nEmail: ${inquiry.email}\nSubject: ${inquiry.subject || 'General'}\nDate: ${new Date(inquiry.createdAt).toLocaleDateString()}\nStatus: ${inquiry.status || 'new'}\n\nFull Message:\n"${inquiry.message}"\n\n📧 Respond directly to: ${inquiry.email}`);
+            }
+        }
+
+        // CSV Export Functions
+        function convertToCSV(data, headers) {
+            if (!data || data.length === 0) return '';
+            
+            const csvHeaders = headers.join(',');
+            const csvRows = data.map(row => 
+                headers.map(header => {
+                    const value = row[header] || '';
+                    // Escape quotes and wrap in quotes if contains comma
+                    const escaped = String(value).replace(/"/g, '""');
+                    return escaped.includes(',') ? `"${escaped}"` : escaped;
+                }).join(',')
+            );
+            
+            return [csvHeaders, ...csvRows].join('\n');
+        }
+
+        function downloadCSV(csvContent, filename) {
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportContacts() {
+            if (!adminData.contacts || adminData.contacts.length === 0) {
+                alert('No contact data to export');
+                return;
+            }
+
+            const headers = ['name', 'email', 'subject', 'message', 'status', 'createdAt'];
+            const processedData = adminData.contacts.map(contact => ({
+                name: contact.name,
+                email: contact.email,
+                subject: contact.subject || 'General',
+                message: contact.message,
+                status: contact.status || 'new',
+                createdAt: new Date(contact.createdAt).toLocaleDateString()
+            }));
+
+            const csv = convertToCSV(processedData, headers);
+            downloadCSV(csv, `ascend-academics-contacts-${new Date().toISOString().split('T')[0]}.csv`);
+        }
+
+        function exportReviews() {
+            if (!adminData.reviews || adminData.reviews.length === 0) {
+                alert('No review data to export');
+                return;
+            }
+
+            const headers = ['name', 'rating', 'comment', 'approved', 'createdAt'];
+            const processedData = adminData.reviews.map(review => ({
+                name: review.name,
+                rating: review.rating,
+                comment: review.comment,
+                approved: review.approved ? 'Yes' : 'No',
+                createdAt: new Date(review.createdAt).toLocaleDateString()
+            }));
+
+            const csv = convertToCSV(processedData, headers);
+            downloadCSV(csv, `ascend-academics-reviews-${new Date().toISOString().split('T')[0]}.csv`);
+        }
+
+        function exportNewsletter() {
+            if (!adminData.newsletter || adminData.newsletter.length === 0) {
+                alert('No newsletter data to export');
+                return;
+            }
+
+            const headers = ['email', 'subscribed', 'createdAt'];
+            const processedData = adminData.newsletter.map(subscriber => ({
+                email: subscriber.email,
+                subscribed: subscriber.subscribed ? 'Yes' : 'No',
+                createdAt: new Date(subscriber.createdAt).toLocaleDateString()
+            }));
+
+            const csv = convertToCSV(processedData, headers);
+            downloadCSV(csv, `ascend-academics-newsletter-${new Date().toISOString().split('T')[0]}.csv`);
+        }
+
+        function exportTutoringInquiries() {
+            if (!adminData.contacts || adminData.contacts.length === 0) {
+                alert('No inquiry data to export');
+                return;
+            }
+
+            // Filter for tutoring-related inquiries
+            const tutoringInquiries = adminData.contacts.filter(contact => 
+                contact.subject === 'scheduling' || 
+                contact.subject === 'pricing' || 
+                contact.subject === 'subjects' || 
+                contact.message.toLowerCase().includes('tutor') ||
+                contact.message.toLowerCase().includes('session') ||
+                contact.message.toLowerCase().includes('math') ||
+                contact.message.toLowerCase().includes('science')
+            );
+
+            if (tutoringInquiries.length === 0) {
+                alert('No tutoring inquiries to export');
+                return;
+            }
+
+            const headers = ['name', 'email', 'subject', 'message', 'status', 'createdAt'];
+            const processedData = tutoringInquiries.map(inquiry => ({
+                name: inquiry.name,
+                email: inquiry.email,
+                subject: inquiry.subject || 'General',
+                message: inquiry.message,
+                status: inquiry.status || 'new',
+                createdAt: new Date(inquiry.createdAt).toLocaleDateString()
+            }));
+
+            const csv = convertToCSV(processedData, headers);
+            downloadCSV(csv, `ascend-academics-tutoring-inquiries-${new Date().toISOString().split('T')[0]}.csv`);
+        }
+
+        function exportAllData() {
+            // Create a comprehensive export with all data
+            const currentDate = new Date().toISOString().split('T')[0];
+            
+            // Export each dataset separately
+            if (adminData.contacts && adminData.contacts.length > 0) {
+                exportContacts();
+            }
+            
+            if (adminData.reviews && adminData.reviews.length > 0) {
+                setTimeout(() => exportReviews(), 500);
+            }
+            
+            if (adminData.newsletter && adminData.newsletter.length > 0) {
+                setTimeout(() => exportNewsletter(), 1000);
+            }
+
+            // Create summary file
+            const summaryData = [{
+                export_date: currentDate,
+                total_contacts: adminData.contacts?.length || 0,
+                total_reviews: adminData.reviews?.length || 0,
+                total_newsletter_subscribers: adminData.newsletter?.length || 0,
+                approved_reviews: adminData.reviews?.filter(r => r.approved).length || 0,
+                new_contacts: adminData.contacts?.filter(c => c.status === 'new').length || 0
+            }];
+
+            const summaryHeaders = ['export_date', 'total_contacts', 'total_reviews', 'total_newsletter_subscribers', 'approved_reviews', 'new_contacts'];
+            const summaryCsv = convertToCSV(summaryData, summaryHeaders);
+            
+            setTimeout(() => {
+                downloadCSV(summaryCsv, `ascend-academics-summary-${currentDate}.csv`);
+                alert('All data exported! Check your downloads folder for multiple CSV files.');
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
